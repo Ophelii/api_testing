@@ -1,6 +1,7 @@
 from http import HTTPStatus
 from api.questions_api import api
 
+
 def test_2_status():
     res = api.list_users()
 
@@ -19,7 +20,7 @@ def test_single_user():
     res = api.single_user()
     res_body = res.json()
     assert res.status_code == HTTPStatus.OK
-    # Assert.validate_schema(res.body)
+    # Assert.validate_schema(res.json())
     assert res_body["data"]["first_name"] == "Janet"
     example = {
         "data": {
@@ -38,16 +39,38 @@ def test_single_user():
 
 
 def test_create():
-    post = api.create("Margo", "waitress")
+    res = api.create("Margo", "waitress")
     # name = 'Margo'
     # job = 'waitress'
-    # post_body = post.json()
+    # res_body = res.json()
 
-    assert post.status_code == HTTPStatus.CREATED
-    assert post.json()["name"] == "Margo"
-    assert post.json()["job"] == "waitress"
-    assert api.delete_user(post.json()['id']).status_code == HTTPStatus.NO_CONTENT
-
-
+    assert res.status_code == HTTPStatus.CREATED
+    assert res.json()["name"] == "Margo"
+    assert res.json()["job"] == "waitress"
+    assert api.delete_user(res.json()['id']).status_code == HTTPStatus.NO_CONTENT
 
 
+def test_register():
+    email = "eve.holt@reqres.in"
+    password = "any"
+    res = api.register(email, password)
+
+    # print("Status code:", res.status_code)  # Печатаем статус код ответа
+    # print("Response body:", res.json())  # Печатаем тело ответа
+
+    assert res.status_code == HTTPStatus.OK
+    # Assert.validate_schema(res.json())
+
+
+def test_register_fail():
+    email = "eve.holt@reqres.in"
+    res = api.register_fail(email)
+    res_body = res.json()
+
+    assert res.status_code == HTTPStatus.BAD_REQUEST
+    # Assert.validate_schema(res.json())
+    assert res_body["error"] == "Missing password"
+    expected_response = {
+        "error": "Missing password"
+    }
+    assert res_body == expected_response

@@ -67,4 +67,54 @@ class Api(Client):
         url = self.BASE_URL + self.USERS + F"/{id}"
         return self.delete(url)
 
+    def register(self, email: str, password: str):
+        """
+        :method:    post
+        :rout:      /api/register
+        :status:    200
+        :body:      {
+                        "email": "",
+                        "password": ""
+                     }
+
+        :headers:   {
+                        "Content-Type": "application/json",
+                     }
+        """
+        url = self.BASE_URL + '/register'
+        payload = json.dumps({
+            "email": F"{email}",
+            "password": F"{password}"
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        return self.post(url, headers, payload)
+
+
+    def register_fail(self, email: str):
+        """
+        :method:    post
+        :rout:      /api/register
+        :status:    400
+        :body:      {
+                        "email": ""
+                     }
+
+        :headers:   {
+                        "Content-Type": "application/json",
+                     }
+        """
+        url = self.BASE_URL + '/register'
+        payload = json.dumps({
+            "email": F"{email}",
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        return self.post(url, headers, payload)
+
+
+
+
 api = Api()
